@@ -449,7 +449,7 @@
 
     // Bu adres, FastAPI backend'imizin adresidir.
     // Siteyi backend ile aynı alan adında yayınladığımızda "/api/message" yeterli olur.
-    const API_URL = "/api/message";
+    const API_URL = "https://himself-advancement-tracking-roulette.trycloudflare.com/api/message";
 
     // Kullanıcıya bir konuşma kimliği veriyoruz.
     // Bu kimlik sayesinde kullanıcı telefon numarası vermeden kendi konuşmasına geri dönebilir.
@@ -520,7 +520,7 @@
     async function loadReplies() {
       try {
         const response = await fetch(
-          `/api/replies/${encodeURIComponent(conversationId)}`
+          `https://himself-advancement-tracking-roulette.trycloudflare.com/api/replies/${encodeURIComponent(conversationId)}${encodeURIComponent(conversationId)}`
         );
 
         if (!response.ok) return;
