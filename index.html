@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef3ef">
+  <meta name="description" content="Motosiklet sahibine kısa ve isimsiz bir not bırakın.">
+  <title>QR Moto | Bir not bırakın</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #eef3ef;
+      --surface: #fbfcfa;
+      --ink: #1d2b26;
+      --muted: #66736d;
+      --line: #d7e0da;
+      --accent: #d9654d;
+      --accent-dark: #b94c38;
+      --mint: #dcebe2;
+      --focus: #286b50;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      background:
+        linear-gradient(rgba(238, 243, 239, 0.78), rgba(238, 243, 239, 0.78)),
+        url("arkaplan.jpg") center / cover no-repeat;
+      content: "";
+      pointer-events: none;
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+      width: min(100% - 48px, 1040px);
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid var(--ink);
+      border-radius: 9px 9px 9px 3px;
+      font-size: 13px;
+    }
+
+    .privacy-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .privacy-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5b9673;
+    }
+
+    main {
+      width: min(100%, 720px);
+      margin: auto;
+      padding: 78px 0 88px;
+      animation: arrive 500ms ease-out both;
+    }
+
+    .eyebrow {
+      margin: 0 0 17px;
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 650px;
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 54px;
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    form { margin-top: 44px; }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      margin-bottom: 15px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .option {
+      position: relative;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(251, 252, 250, 0.68);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+    }
+
+    .option:hover { border-color: #a8bbb0; transform: translateY(-1px); }
+
+    .option input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    .option:has(input:checked) {
+      border-color: var(--focus);
+      background: var(--mint);
+    }
+
+    .option:has(input:focus-visible) { outline: 3px solid #8cb49d; outline-offset: 2px; }
+
+    .option-mark {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #aebbb3;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .option-mark::after {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: transparent;
+      content: "";
+    }
+
+    .option:has(input:checked) .option-mark { border-color: var(--focus); }
+    .option:has(input:checked) .option-mark::after { background: var(--focus); }
+
+    .message-label {
+      display: block;
+      margin: 28px 0 11px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 132px;
+      display: block;
+      resize: vertical;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: none;
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.55;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    textarea::placeholder { color: #929d96; }
+    textarea:focus { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(40, 107, 80, 0.12); }
+
+    .form-bottom {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .privacy-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .privacy-note svg { flex: 0 0 auto; }
+
+    button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 19px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color 150ms ease, transform 150ms ease;
+    }
+
+    button:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    button:focus-visible { outline: 3px solid #8cb49d; outline-offset: 3px; }
+    button svg { width: 16px; height: 16px; }
+
+    .status {
+      min-height: 24px;
+      margin: 15px 0 0;
+      color: var(--focus);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .status:empty { display: none; }
+
+    footer {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .footer-brand {
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+    }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      body::before {
+        background-image:
+          linear-gradient(rgba(238, 243, 239, 0.78), rgba(238, 243, 239, 0.78)),
+          url("arkaplan.jpg");
+        background-position: center, center;
+        background-size: auto, cover;
+      }
+      .page-shell { width: min(100% - 36px, 520px); }
+      .topbar { min-height: 72px; }
+      .privacy-label { font-size: 11px; }
+      main { padding: 58px 0 64px; }
+      h1 { font-size: 39px; }
+      .intro { font-size: 15px; }
+      form { margin-top: 34px; }
+      .options { grid-template-columns: 1fr; gap: 8px; }
+      .option { min-height: 52px; }
+      .form-bottom { align-items: flex-start; flex-direction: column; }
+      button { width: 100%; }
+      footer { min-height: 58px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="QR Moto ana sayfa">
+        <span class="brand-mark" aria-hidden="true">q</span>
+        <span>qr moto</span>
+      </a>
+      <span class="privacy-label"><span class="privacy-dot" aria-hidden="true"></span>İsimsiz iletişim</span>
+    </header>
+
+    <main>
+      <p class="eyebrow">Motosiklet sahibine not</p>
+      <h1>Göndermek istediğiniz mesajı giriniz</h1>
+      <p class="intro">Bir sorun mu var? Kısaca not bırakın, sahibine ulaşsın.</p>
+
+      <form id="message-form">
+        <fieldset>
+          <legend>Bir konu seçin</legend>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="topic" value="Park yeri sorunu">
+              <span class="option-mark" aria-hidden="true"></span>
+              <span>Park yeri sorunu</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="topic" value="Motorla ilgili bir sorun">
+              <span class="option-mark" aria-hidden="true"></span>
+              <span>Motorla ilgili bir sorun</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="topic" value="Farlar açık kalmış">
+              <span class="option-mark" aria-hidden="true"></span>
+              <span>Farlar açık kalmış</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="topic" value="Alarm çalıyor">
+              <span class="option-mark" aria-hidden="true"></span>
+              <span>Alarm çalıyor</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="topic" value="Motor devrilmiş">
+              <span class="option-mark" aria-hidden="true"></span>
+              <span>Motor devrilmiş</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="topic" value="Başka bir durum">
+              <span class="option-mark" aria-hidden="true"></span>
+              <span>Başka bir durum</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <label class="message-label" for="message">Mesajınız</label>
+        <textarea id="message" name="message" maxlength="500" placeholder="Mesajınızı buraya yazın..."></textarea>
+
+        <div class="form-bottom">
+          <span class="privacy-note">
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1.5 13 3.4v3.8c0 3.2-2.1 5.8-5 7.3-2.9-1.5-5-4.1-5-7.3V3.4L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="m5.8 7.8 1.5 1.5 3-3.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Telefon numaranızı paylaşmanız gerekmez
+          </span>
+          <button type="submit">
+            Mesajı gönder
+            <svg aria-hidden="true" viewBox="0 0 16 16" fill="none">
+              <path d="M2.2 8h10.9M8.5 3.4 13.1 8l-4.6 4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <p class="status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </main>
+
+    <!-- Kullanıcının daha önceki konuşmasını ve sahibinin cevaplarını göstereceğimiz alan. -->
+    <section id="conversation-section" aria-live="polite" style="
+      width:min(100%,720px);
+      margin:0 auto 40px;
+      display:none;
+    ">
+      <div style="
+        padding:18px;
+        border:1px solid var(--line);
+        border-radius:8px;
+        background:rgba(251,252,250,.82);
+      ">
+        <strong style="font-size:14px;">Cevaplar</strong>
+        <div id="conversation-messages" style="
+          margin-top:12px;
+          display:grid;
+          gap:10px;
+          font-size:14px;
+          line-height:1.5;
+        "></div>
+      </div>
+    </section>
+
+    <footer>
+      <span class="footer-brand">qr moto</span>
+      <span>Ön yüz demosu</span>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.querySelector("#message-form");
+    const status = document.querySelector("#form-status");
+
+    // Bu adres, FastAPI backend'imizin adresidir.
+    // Siteyi backend ile aynı alan adında yayınladığımızda "/api/message" yeterli olur.
+    const API_URL = "/api/message";
+
+    // Kullanıcıya bir konuşma kimliği veriyoruz.
+    // Bu kimlik sayesinde kullanıcı telefon numarası vermeden kendi konuşmasına geri dönebilir.
+    let conversationId = localStorage.getItem("qr_moto_conversation_id");
+
+    if (!conversationId) {
+      conversationId = crypto.randomUUID();
+      localStorage.setItem("qr_moto_conversation_id", conversationId);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const topic = form.querySelector('input[name="topic"]:checked');
+      const message = form.querySelector("#message").value.trim();
+
+      if (!topic && !message) {
+        status.textContent = "Devam etmek için bir konu seçin veya mesajınızı yazın.";
+        status.style.color = "var(--accent-dark)";
+        return;
+      }
+
+      // Konu seçilmişse onu mesajın başına ekliyoruz.
+      const fullMessage = topic
+        ? `Konu: ${topic.value}\n\n${message || "(Ek mesaj yok)"}`
+        : message;
+
+      status.textContent = "Mesaj gönderiliyor...";
+      status.style.color = "var(--focus)";
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            conversation_id: conversationId,
+            message: fullMessage
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || "Mesaj gönderilemedi.");
+        }
+
+        status.textContent = "Mesajınız iletildi.";
+        status.style.color = "var(--focus)";
+
+        // Gönderim başarılıysa formu temizliyoruz.
+        form.reset();
+      } catch (error) {
+        console.error(error);
+        status.textContent = "Mesaj gönderilemedi. Lütfen biraz sonra tekrar deneyin.";
+        status.style.color = "var(--accent-dark)";
+      }
+    });
+  </script>
+
+  <script>
+    const conversationSection = document.querySelector("#conversation-section");
+    const conversationMessages = document.querySelector("#conversation-messages");
+
+    // Kullanıcının konuşmasına ait cevapları düzenli aralıklarla kontrol ediyoruz.
+    // İlk sürümde bu yöntem bildirim altyapısının yerini tutar.
+    async function loadReplies() {
+      try {
+        const response = await fetch(
+          `/api/replies/${encodeURIComponent(conversationId)}`
+        );
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        if (!data.messages || data.messages.length === 0) return;
+
+        conversationSection.style.display = "block";
+        conversationMessages.innerHTML = "";
+
+        for (const item of data.messages) {
+          const message = document.createElement("div");
+          message.textContent = item.message;
+          message.style.cssText = `
+            padding:10px 12px;
+            border-radius:7px;
+            background:var(--mint);
+          `;
+          conversationMessages.appendChild(message);
+        }
+      } catch (error) {
+        // Kullanıcıya hata göstermiyoruz. Geçici internet/API sorunlarında
+        // bir sonraki kontrol otomatik olarak tekrar denenecek.
+        console.error("Cevaplar alınamadı:", error);
+      }
+    }
+
+    // Sayfa açıkken yeni cevapları kontrol ediyoruz.
+    loadReplies();
+    setInterval(loadReplies, 5000);
+  </script>
+
+</body>
+</html>
